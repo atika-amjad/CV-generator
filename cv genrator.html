@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inter CV Generator</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+  :root {
+    --primary: #1a3a5c;
+    --accent: #2563eb;
+    --accent2: #e63946;
+    --light: #f4f6fb;
+    --border: #dde3ef;
+    --text: #1e2a3a;
+    --muted: #6b7a99;
+    --white: #fff;
+    --card-shadow: 0 4px 24px rgba(37,99,235,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--light);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .app-header {
+    background: var(--primary);
+    color: #fff;
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 12px rgba(26,58,92,0.18);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .app-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .app-header .badge-beta {
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* LAYOUT */
+  .main-layout {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 0;
+    min-height: calc(100vh - 58px);
+  }
+
+  /* FORM PANEL */
+  .form-panel {
+    background: var(--white);
+    border-right: 1.5px solid var(--border);
+    overflow-y: auto;
+    max-height: calc(100vh - 58px);
+    padding: 24px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .section-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .form-group-box {
+    background: #f8faff;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 14px 10px;
+  }
+
+  .form-group-box .group-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .form-control, .form-select {
+    font-size: 0.82rem;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    padding: 7px 11px;
+    background: var(--white);
+    color: var(--text);
+    transition: border 0.2s;
+  }
+  .form-control:focus, .form-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    outline: none;
+  }
+  .form-control::placeholder { color: #bac1d4; }
+
+  .btn-add {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0;
+  }
+  .btn-add:hover { color: var(--primary); }
+
+  .btn-remove-entry {
+    background: none;
+    border: none;
+    color: var(--accent2);
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 5px;
+    transition: background 0.15s;
+  }
+  .btn-remove-entry:hover { background: #ffeaea; }
+
+  .entry-block {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 11px 8px;
+    margin-top: 10px;
+    position: relative;
+  }
+
+  /* SKILLS */
+  .skills-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 8px;
+  }
+  .skill-tag {
+    background: var(--accent);
+    color: #fff;
+    padding: 3px 11px 3px 11px;
+    border-radius: 20px;
+    font-size: 0.76rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .skill-tag .rm-skill {
+    cursor: pointer;
+    font-size: 0.65rem;
+    opacity: 0.7;
+    background: none;
+    border: none;
+    color: #fff;
+    padding: 0;
+    line-height: 1;
+  }
+  .skill-tag .rm-skill:hover { opacity: 1; }
+
+  .skill-add-row {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    margin-top: 6px;
+  }
+  .btn-skill-add {
+    background: var(--accent);
+    color: var(--white);
+    border: none;
+    border-radius: 7px;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.18s;
+  }
+  .btn-skill-add:hover { background: var(--primary); }
+
+  /* PROFILE PIC */
+  .pic-upload-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .pic-preview {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2.5px solid var(--accent);
+    display: none;
+  }
+  .pic-placeholder {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--light);
+    border: 2px dashed var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 1.2rem;
+  }
+
+  /* GENERATE BUTTONS */
+  .generate-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .btn-gen {
+    flex: 1;
+    padding: 9px 0;
+    font-size: 0.82rem;
+    font-weight: 700;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    transition: opacity 0.15s, transform 0.12s;
+  }
+  .btn-gen:active { transform: scale(0.97); }
+  .btn-word {
+    background: var(--accent);
+    color: var(--white);
+  }
+  .btn-word:hover { background: var(--primary); }
+  .btn-pdf {
+    background: var(--accent2);
+    color: var(--white);
+  }
+  .btn-pdf:hover { background: #b91c2a; }
+
+  /* RIGHT PANEL */
+  .right-panel {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: calc(100vh - 58px);
+    background: var(--light);
+    gap: 0;
+  }
+
+  /* TEMPLATES */
+  .templates-bar {
+    background: var(--white);
+    border-bottom: 1.5px solid var(--border);
+    padding: 16px 24px 12px;
+  }
+  .templates-bar .section-label { margin-bottom: 12px; }
+  .templates-scroll {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .template-card {
+    flex: 0 0 110px;
+    cursor: pointer;
+    border-radius: 8px;
+    border: 2.5px solid var(--border);
+    overflow: hidden;
+    transition: border-color 0.18s, box-shadow 0.18s;
+    position: relative;
+    background: #fff;
+  }
+  .template-card:hover { border-color: var(--accent); box-shadow: var(--card-shadow); }
+  .template-card.selected { border-color: var(--accent); }
+  .template-card .selected-badge {
+    display: none;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--accent);
+    color: #fff;
+    text-align: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 0;
+    letter-spacing: 0.5px;
+  }
+  .template-card.selected .selected-badge { display: block; }
+  .template-thumb {
+    width: 110px;
+    height: 78px;
+    overflow: hidden;
+  }
+  .template-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-align: center;
+    padding: 4px 0 6px;
+    color: var(--muted);
+  }
+
+  /* PREVIEW + MAP */
+  .preview-map-row {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 0;
+    flex: 1;
+  }
+
+  .cv-preview-wrap {
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  .cv-preview {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    padding: 28px 30px;
+    min-height: 600px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* CV TEMPLATE STYLES */
+  /* T0 - Blue Header */
+  .tpl-0 .cv-header-bar {
+    background: var(--primary);
+    color: #fff;
+    padding: 18px 22px;
+    border-radius: 8px 8px 0 0;
+    margin: -28px -30px 20px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .tpl-0 .cv-name { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: #fff; }
+  .tpl-0 .cv-title-role { font-size: 0.85rem; color: rgba(255,255,255,0.8); margin-top: 2px; }
+  .tpl-0 .cv-contact-row { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.78rem; color: #fff; margin-top: 8px; }
+  .tpl-0 .cv-contact-row span { display: flex; align-items: center; gap: 5px; }
+
+  /* T1 - Dark Modern */
+  .tpl-1 .cv-header-bar {
+    background: #111827;
+    color: #fff;
+    padding: 22px 22px 16px;
+    margin: -28px -30px 20px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .tpl-1 .cv-name { font-family: 'DM Sans', sans-serif; font-size: 1.5rem; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
+  .tpl-1 .cv-title-role { font-size: 0.82rem; color: #9ca3af; margin-top: 2px; }
+  .tpl-1 .cv-contact-row { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.76rem; color: #9ca3af; margin-top: 8px; }
+  .tpl-1 .cv-contact-row span { display: flex; align-items: center; gap: 5px; }
+
+  /* T2 - Minimal White */
+  .tpl-2 .cv-header-bar {
+    border-bottom: 3px solid var(--accent);
+    padding: 0 0 14px 0;
+    margin: 0 0 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .tpl-2 .cv-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+  .tpl-2 .cv-title-role { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+  .tpl-2 .cv-contact-row { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.76rem; color: var(--muted); margin-top: 7px; }
+  .tpl-2 .cv-contact-row span { display: flex; align-items: center; gap: 5px; }
+
+  /* T3 - Blue Right */
+  .tpl-3 .cv-header-bar {
+    background: #1e40af;
+    color: #fff;
+    margin: -28px -30px 20px;
+    padding: 16px 22px;
+    border-radius: 8px 8px 0 0;
+    border-bottom: 5px solid #f59e0b;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .tpl-3 .cv-name { font-size: 1.5rem; font-weight: 700; color: #fff; font-family: 'Playfair Display', serif; }
+  .tpl-3 .cv-title-role { font-size: 0.82rem; color: rgba(255,255,255,0.8); margin-top: 2px; }
+  .tpl-3 .cv-contact-row { display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.76rem; color: rgba(255,255,255,0.85); margin-top: 7px; }
+  .tpl-3 .cv-contact-row span { display: flex; align-items: center; gap: 5px; }
+
+  /* T4 - Two Column */
+  .tpl-4 .cv-header-bar {
+    background: linear-gradient(135deg, #1a3a5c, #2563eb);
+    color: #fff;
+    margin: -28px -30px 0px;
+    padding: 20px 22px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .tpl-4 .cv-name { font-size: 1.5rem; font-weight: 700; color: #fff; font-family: 'Playfair Display', serif; }
+  .tpl-4 .cv-title-role { font-size: 0.82rem; color: rgba(255,255,255,0.8); margin-top: 2px; }
+  .tpl-4 .cv-contact-row { display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.75rem; color: rgba(255,255,255,0.85); margin-top: 7px; }
+  .tpl-4 .cv-contact-row span { display: flex; align-items: center; gap: 5px; }
+  .tpl-4 .cv-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+
+  /* Common CV Content */
+  .cv-photo {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255,255,255,0.5);
+    flex-shrink: 0;
+  }
+  .cv-photo-placeholder {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.7);
+    font-size: 1.6rem;
+    flex-shrink: 0;
+  }
+  .cv-section { margin-bottom: 18px; }
+  .cv-section-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom: 1.5px solid var(--border);
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+  }
+  .cv-section p { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+  .cv-entry { margin-bottom: 10px; }
+  .cv-entry-title { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+  .cv-entry-sub { font-size: 0.78rem; color: var(--muted); }
+  .cv-entry-detail { font-size: 0.8rem; color: var(--text); margin-top: 3px; }
+  .cv-entry ul { margin: 4px 0 0 14px; }
+  .cv-entry ul li { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+  .cv-skills-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cv-skill-badge {
+    background: var(--light);
+    border: 1.5px solid var(--border);
+    color: var(--primary);
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  /* MAP PANEL */
+  .map-panel {
+    background: var(--white);
+    border-left: 1.5px solid var(--border);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .map-panel .section-label { margin-bottom: 6px; }
+  #map-frame {
+    width: 100%;
+    height: 260px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    overflow: hidden;
+  }
+  .btn-maps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    background: var(--white);
+    border: 1.5px solid var(--accent);
+    color: var(--accent);
+    border-radius: 8px;
+    padding: 8px 0;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+  }
+  .btn-maps:hover { background: var(--accent); color: #fff; }
+
+  /* MINI TEMPLATE PREVIEWS (SVG-based) */
+  .tpl-thumb-svg { width: 110px; height: 78px; display: block; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-thumb { background: #dde3ef; border-radius: 10px; }
+
+  @media (max-width: 900px) {
+    .main-layout { grid-template-columns: 1fr; }
+    .form-panel { max-height: none; }
+    .right-panel { max-height: none; }
+    .preview-map-row { grid-template-columns: 1fr; }
+    .map-panel { border-left: none; border-top: 1.5px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <i class="fas fa-file-alt" style="font-size:1.2rem;opacity:0.8"></i>
+  <h1>Inter CV Generator</h1>
+  <span class="badge-beta">v1.0</span>
+</header>
+
+<div class="main-layout">
+  <!-- FORM PANEL -->
+  <div class="form-panel">
+    <div class="section-label">Enter Your Information</div>
+
+    <!-- Personal Info -->
+    <div class="form-group-box">
+      <div class="group-title">Personal Information</div>
+      <div class="row g-2">
+        <div class="col-12">
+          <input type="text" class="form-control" id="fullName" placeholder="Full Name" oninput="updatePreview()">
+        </div>
+        <div class="col-6">
+          <input type="email" class="form-control" id="email" placeholder="Email" oninput="updatePreview()">
+        </div>
+        <div class="col-6">
+          <input type="text" class="form-control" id="phone" placeholder="Phone" oninput="updatePreview()">
+        </div>
+        <div class="col-6">
+          <input type="text" class="form-control" id="dob" placeholder="Date of Birth" oninput="updatePreview()">
+        </div>
+        <div class="col-6">
+          <select class="form-select" id="gender" onchange="updatePreview()">
+            <option value="">Select Gender</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="col-12">
+          <input type="text" class="form-control" id="city" placeholder="City, Country" oninput="updatePreview(); updateMap()">
+        </div>
+        <div class="col-12">
+          <input type="text" class="form-control" id="jobTitle" placeholder="Job Title / Role" oninput="updatePreview()">
+        </div>
+        <div class="col-12">
+          <textarea class="form-control" id="summary" placeholder="Professional Summary" rows="2" oninput="updatePreview()" style="resize:vertical;font-size:0.82rem;"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Education -->
+    <div class="form-group-box">
+      <div class="group-title">
+        Education
+        <button class="btn-add" onclick="addEducation()"><i class="fas fa-plus"></i> Add</button>
+      </div>
+      <div id="educationEntries">
+        <div class="entry-block">
+          <button class="btn-remove-entry" onclick="removeEntry(this)" style="position:absolute;top:6px;right:6px;"><i class="fas fa-times"></i></button>
+          <div class="row g-2">
+            <div class="col-12"><input type="text" class="form-control edu-degree" placeholder="Degree" oninput="updatePreview()"></div>
+            <div class="col-12"><input type="text" class="form-control edu-uni" placeholder="University" oninput="updatePreview()"></div>
+            <div class="col-6"><input type="text" class="form-control edu-year" placeholder="Year of Passing" oninput="updatePreview()"></div>
+            <div class="col-6"><input type="text" class="form-control edu-cgpa" placeholder="CGPA" oninput="updatePreview()"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Work Experience -->
+    <div class="form-group-box">
+      <div class="group-title">
+        Work Experience
+        <button class="btn-add" onclick="addExperience()"><i class="fas fa-plus"></i> Add</button>
+      </div>
+      <div id="experienceEntries">
+        <div class="entry-block">
+          <button class="btn-remove-entry" onclick="removeEntry(this)" style="position:absolute;top:6px;right:6px;"><i class="fas fa-times"></i></button>
+          <div class="row g-2">
+            <div class="col-12"><input type="text" class="form-control exp-title" placeholder="Job Title" oninput="updatePreview()"></div>
+            <div class="col-12"><input type="text" class="form-control exp-company" placeholder="Company" oninput="updatePreview()"></div>
+            <div class="col-12"><input type="text" class="form-control exp-duration" placeholder="Duration (e.g. 2020–2023)" oninput="updatePreview()"></div>
+            <div class="col-12"><textarea class="form-control exp-desc" placeholder="Responsibilities / Description" rows="2" oninput="updatePreview()" style="resize:vertical;font-size:0.82rem;"></textarea></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skills -->
+    <div class="form-group-box">
+      <div class="group-title">Skills</div>
+      <div class="skills-wrap" id="skillsWrap">
+        <span class="skill-tag">HTML <button class="rm-skill" onclick="removeSkill(this)">✕</button></span>
+        <span class="skill-tag">CSS <button class="rm-skill" onclick="removeSkill(this)">✕</button></span>
+        <span class="skill-tag">JavaScript <button class="rm-skill" onclick="removeSkill(this)">✕</button></span>
+        <span class="skill-tag">React.js <button class="rm-skill" onclick="removeSkill(this)">✕</button></span>
+      </div>
+      <div class="skill-add-row">
+        <input type="text" class="form-control" id="skillInput" placeholder="Add a skill..." onkeydown="if(event.key==='Enter')addSkill()">
+        <button class="btn-skill-add" onclick="addSkill()"><i class="fas fa-plus"></i> Add</button>
+      </div>
+    </div>
+
+    <!-- Profile Picture -->
+    <div class="form-group-box">
+      <div class="group-title">Upload Profile Picture</div>
+      <label class="pic-upload-label">
+        <div class="pic-placeholder" id="picPlaceholder"><i class="fas fa-user"></i></div>
+        <img class="pic-preview" id="picPreview" alt="Profile">
+        <input type="file" id="picInput" accept="image/*" style="display:none" onchange="handlePicUpload(event)">
+        <span style="font-size:0.8rem;color:var(--muted);">Choose File &nbsp;<span id="picFileName">No file chosen</span></span>
+      </label>
+    </div>
+
+    <!-- Generate -->
+    <div class="form-group-box">
+      <div class="group-title">Generate CV</div>
+      <div class="generate-row">
+        <button class="btn-gen btn-word" onclick="generateWord()">
+          <i class="fas fa-file-word"></i> Word
+        </button>
+        <button class="btn-gen btn-pdf" onclick="generatePDF()">
+          <i class="fas fa-file-pdf"></i> PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+    <!-- Templates -->
+    <div class="templates-bar">
+      <div class="section-label">Select CV Template</div>
+      <div class="templates-scroll" id="templatesScroll">
+        <!-- Templates rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Preview + Map -->
+    <div class="preview-map-row">
+      <!-- CV Preview -->
+      <div class="cv-preview-wrap">
+        <div class="cv-preview" id="cvPreview">
+          <!-- rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Map Panel -->
+      <div class="map-panel">
+        <div class="section-label">Your Location</div>
+        <iframe id="map-frame"
+          frameborder="0"
+          style="border:0"
+          allowfullscreen
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          src="https://www.google.com/maps?q=Lahore,Pakistan&output=embed">
+        </iframe>
+        <a class="btn-maps" id="mapLink" href="https://www.google.com/maps?q=Lahore,Pakistan" target="_blank">
+          <i class="fas fa-map-marker-alt"></i> Open in Google Maps
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script>
+// ---- STATE ----
+let selectedTemplate = 0;
+let profilePhotoSrc = null;
+
+// ---- TEMPLATE THUMBNAILS ----
+const templateThumbs = [
+  // T0: Blue Header
+  `<svg class="tpl-thumb-svg" viewBox="0 0 110 78" xmlns="http://www.w3.org/2000/svg">
+    <rect width="110" height="78" fill="#f4f6fb"/>
+    <rect width="110" height="26" fill="#1a3a5c"/>
+    <circle cx="17" cy="13" r="8" fill="rgba(255,255,255,0.25)"/>
+    <rect x="28" y="8" width="40" height="4" rx="2" fill="#fff" opacity="0.9"/>
+    <rect x="28" y="15" width="25" height="3" rx="1.5" fill="rgba(255,255,255,0.6)"/>
+    <rect x="8" y="32" width="45" height="2.5" rx="1" fill="#2563eb" opacity="0.5"/>
+    <rect x="8" y="38" width="94" height="2" rx="1" fill="#dde3ef"/>
+    <rect x="8" y="42" width="80" height="2" rx="1" fill="#dde3ef"/>
+    <rect x="8" y="50" width="45" height="2.5" rx="1" fill="#2563eb" opacity="0.5"/>
+    <rect x="8" y="56" width="94" height="2" rx="1" fill="#dde3ef"/>
+    <rect x="8" y="60" width="70" height="2" rx="1" fill="#dde3ef"/>
+    <rect x="8" y="68" width="30" height="5" rx="2.5" fill="#2563eb" opacity="0.4"/>
+    <rect x="42" y="68" width="22" height="5" rx="2.5" fill="#2563eb" opacity="0.4"/>
+  </svg>`,
+  // T1: Dark
+  `<svg class="tpl-thumb-svg" viewBox="0 0 110 78" xmlns="http://www.w3.org/2000/svg">
+    <rect width="110" height="78" fill="#f4f6fb"/>
+    <rect width="110" height="26" fill="#111827"/>
+    <circle cx="17" cy="13" r="8" fill="rgba(255,255,255,0.15)"/>
+    <rect x="28" y="8" width="40" height="4" rx="2" fill="#fff" opacity="0.85"/>
+    <rect x="28" y="15" width="28" height="3" rx="1.5" fill="#9ca3af"/>
+    <rect x="8" y="32" width="45" height="2.5" rx="1" fill="#374151"/>
+    <rect x="8" y="38" width="94" height="2" rx="1" fill="#e5e7eb"/>
+    <rect x="8" y="42" width="80" height="2" rx="1" fill="#e5e7eb"/>
+    <rect x="8" y="50" width="45" height="2.5" rx="1" fill="#374151"/>
+    <rect x="8" y="56" width="94" height="2" rx="1" fill="#e5e7eb"/>
+    <rect x="8" y="60" width="70" height="2" rx="1" fill="#e5e7eb"/>
+    <rect x="8" y="68" width="30" height="5" rx="2.5" fill="#6b7280" opacity="0.6"/>
+    <rect x="42" y="68" width="22" height="5" rx="2.5" fill="#6b7280" opacity="0.6"/>
+  </svg>`,
+  // T2: Minimal White
+  `<svg class="tpl-thumb-svg" viewBox="0 0 110 78" xmlns="http://www.w3.org/2000/svg">
+    <rect width="110" height="78" fill="#fff"/>
+    <rect x="8" y="8" width="50" height="5" rx="2" fill="#1a3a5c"/>
+    <rect x="8" y="16" width="30" height="3" rx="1.5" fill="#6b7a99"/>
+    <rect x="8" y="22" width="94" height="2" rx="1" fill="#2563eb"/>
+    <rect x="8" y="30" width="45" height="2.5" rx="1" fill="#2563eb" opacity="0.5"/>
+    <rect x="8" y="36" width="94" height="2" rx="1" fill="#dde3ef"/>
+    <rect x="8" y="40" width="80" height="2" rx="1" fill="#dde3ef"/>
+    <rect x="8" y="48" width="45" height="2.5" rx="1" fill="#2563eb" opacity="0.5"/>
+    <rect x="8" y="54" width="94" height="2" rx="1" fill="#dde3ef"/>
+    <rect x="8" y="58" width="70" height="2" rx="1" fill="#dde3ef"/>
+    <rect x="8" y="66" width="25" height="5" rx="2.5" fill="#dde3ef"/>
+    <rect x="36" y="66" width="20" height="5" rx="2.5" fill="#dde3ef"/>
+    <rect x="59" y="66" width="25" height="5" rx="2.5" fill="#dde3ef"/>
+  </svg>`,
+  // T3: Blue + Gold
+  `<svg class="tpl-thumb-svg" viewBox="0 0 110 78" xmlns="http://www.w3.org/2000/svg">
+    <rect width="110" height="78" fill="#f4f6fb"/>
+    <rect width="110" height="24" fill="#1e40af"/>
+    <rect y="24" width="110" height="4" fill="#f59e0b"/>
+    <circle cx="16" cy="12" r="7" fill="rgba(255,255,255,0.2)"/>
+    <rect x="26" y="8" width="38" height="4" rx="2" fill="#fff" opacity="0.9"/>
+    <rect x="26" y="15" width="24" height="3" rx="1.5" fill="rgba(255,255,255,0.6)"/>
+    <rect x="8" y="34" width="45" height="2.5" rx="1" fill="#1e40af" opacity="0.5"/>
+    <rect x="8" y="40" width="94" height="2" rx="1" fill="#dde3ef"/>
+    <rect x="8" y="44" width="80" height="2" rx="1" fill="#dde3ef"/>
+    <rect x="8" y="52" width="45" height="2.5" rx="1" fill="#1e40af" opacity="0.5"/>
+    <rect x="8" y="58" width="94" height="2" rx="1" fill="#dde3ef"/>
+    <rect x="8" y="62" width="70" height="2" rx="1" fill="#dde3ef"/>
+  </svg>`,
+  // T4: Gradient
+  `<svg class="tpl-thumb-svg" viewBox="0 0 110 78" xmlns="http://www.w3.org/2000/svg">
+    <rect width="110" height="78" fill="#f4f6fb"/>
+    <defs>
+      <linearGradient id="g4" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#1a3a5c"/>
+        <stop offset="100%" stop-color="#2563eb"/>
+      </linearGradient>
+    </defs>
+    <rect width="110" height="26" fill="url(#g4)"/>
+    <circle cx="16" cy="13" r="7" fill="rgba(255,255,255,0.2)"/>
+    <rect x="26" y="8" width="38" height="4" rx="2" fill="#fff" opacity="0.9"/>
+    <rect x="26" y="15" width="24" height="3" rx="1.5" fill="rgba(255,255,255,0.6)"/>
+    <rect x="8" y="32" width="44" height="22" rx="3" fill="#fff" opacity="0.8"/>
+    <rect x="58" y="32" width="44" height="22" rx="3" fill="#fff" opacity="0.8"/>
+    <rect x="11" y="36" width="30" height="2" rx="1" fill="#dde3ef"/>
+    <rect x="11" y="40" width="24" height="2" rx="1" fill="#dde3ef"/>
+    <rect x="11" y="44" width="20" height="2" rx="1" fill="#dde3ef"/>
+    <rect x="61" y="36" width="30" height="2" rx="1" fill="#dde3ef"/>
+    <rect x="61" y="40" width="24" height="2" rx="1" fill="#dde3ef"/>
+    <rect x="61" y="44" width="20" height="2" rx="1" fill="#dde3ef"/>
+    <rect x="8" y="60" width="94" height="2" rx="1" fill="#dde3ef"/>
+    <rect x="8" y="65" width="70" height="2" rx="1" fill="#dde3ef"/>
+  </svg>`
+];
+
+const templateNames = ['Selected', 'Template 1', 'Template 2', 'Template 3', 'Template 4'];
+
+function renderTemplates() {
+  const wrap = document.getElementById('templatesScroll');
+  wrap.innerHTML = templateThumbs.map((thumb, i) => `
+    <div class="template-card ${i === selectedTemplate ? 'selected' : ''}" onclick="selectTemplate(${i})">
+      <div class="template-thumb">${thumb}</div>
+      <div class="template-label">${templateNames[i]}</div>
+      <div class="selected-badge"><i class="fas fa-check" style="margin-right:3px"></i>Selected</div>
+    </div>
+  `).join('');
+}
+
+function selectTemplate(i) {
+  selectedTemplate = i;
+  renderTemplates();
+  updatePreview();
+}
+
+// ---- SKILLS ----
+function addSkill() {
+  const inp = document.getElementById('skillInput');
+  const val = inp.value.trim();
+  if (!val) return;
+  const wrap = document.getElementById('skillsWrap');
+  const tag = document.createElement('span');
+  tag.className = 'skill-tag';
+  tag.innerHTML = `${val} <button class="rm-skill" onclick="removeSkill(this)">✕</button>`;
+  wrap.appendChild(tag);
+  inp.value = '';
+  updatePreview();
+}
+
+function removeSkill(btn) {
+  btn.parentElement.remove();
+  updatePreview();
+}
+
+function getSkills() {
+  return [...document.querySelectorAll('#skillsWrap .skill-tag')].map(t => t.childNodes[0].textContent.trim());
+}
+
+// ---- EDUCATION/EXPERIENCE ENTRIES ----
+function addEducation() {
+  const wrap = document.getElementById('educationEntries');
+  const div = document.createElement('div');
+  div.className = 'entry-block';
+  div.innerHTML = `
+    <button class="btn-remove-entry" onclick="removeEntry(this)" style="position:absolute;top:6px;right:6px;"><i class="fas fa-times"></i></button>
+    <div class="row g-2">
+      <div class="col-12"><input type="text" class="form-control edu-degree" placeholder="Degree" oninput="updatePreview()"></div>
+      <div class="col-12"><input type="text" class="form-control edu-uni" placeholder="University" oninput="updatePreview()"></div>
+      <div class="col-6"><input type="text" class="form-control edu-year" placeholder="Year of Passing" oninput="updatePreview()"></div>
+      <div class="col-6"><input type="text" class="form-control edu-cgpa" placeholder="CGPA" oninput="updatePreview()"></div>
+    </div>`;
+  wrap.appendChild(div);
+}
+
+function addExperience() {
+  const wrap = document.getElementById('experienceEntries');
+  const div = document.createElement('div');
+  div.className = 'entry-block';
+  div.innerHTML = `
+    <button class="btn-remove-entry" onclick="removeEntry(this)" style="position:absolute;top:6px;right:6px;"><i class="fas fa-times"></i></button>
+    <div class="row g-2">
+      <div class="col-12"><input type="text" class="form-control exp-title" placeholder="Job Title" oninput="updatePreview()"></div>
+      <div class="col-12"><input type="text" class="form-control exp-company" placeholder="Company" oninput="updatePreview()"></div>
+      <div class="col-12"><input type="text" class="form-control exp-duration" placeholder="Duration (e.g. 2020–2023)" oninput="updatePreview()"></div>
+      <div class="col-12"><textarea class="form-control exp-desc" placeholder="Responsibilities / Description" rows="2" oninput="updatePreview()" style="resize:vertical;font-size:0.82rem;"></textarea></div>
+    </div>`;
+  wrap.appendChild(div);
+}
+
+function removeEntry(btn) {
+  btn.closest('.entry-block').remove();
+  updatePreview();
+}
+
+// ---- PROFILE PIC ----
+function handlePicUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  document.getElementById('picFileName').textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    profilePhotoSrc = ev.target.result;
+    document.getElementById('picPlaceholder').style.display = 'none';
+    const prev = document.getElementById('picPreview');
+    prev.src = profilePhotoSrc;
+    prev.style.display = 'block';
+    updatePreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+// ---- MAP ----
+function updateMap() {
+  const city = document.getElementById('city').value.trim() || 'Lahore, Pakistan';
+  const encoded = encodeURIComponent(city);
+  document.getElementById('map-frame').src = `https://www.google.com/maps?q=${encoded}&output=embed`;
+  document.getElementById('mapLink').href = `https://www.google.com/maps?q=${encoded}`;
+}
+
+// ---- PREVIEW ----
+function getFormData() {
+  const edus = [...document.querySelectorAll('#educationEntries .entry-block')].map(el => ({
+    degree: el.querySelector('.edu-degree')?.value || '',
+    uni: el.querySelector('.edu-uni')?.value || '',
+    year: el.querySelector('.edu-year')?.value || '',
+    cgpa: el.querySelector('.edu-cgpa')?.value || ''
+  })).filter(e => e.degree || e.uni);
+
+  const exps = [...document.querySelectorAll('#experienceEntries .entry-block')].map(el => ({
+    title: el.querySelector('.exp-title')?.value || '',
+    company: el.querySelector('.exp-company')?.value || '',
+    duration: el.querySelector('.exp-duration')?.value || '',
+    desc: el.querySelector('.exp-desc')?.value || ''
+  })).filter(e => e.title || e.company);
+
+  return {
+    name: document.getElementById('fullName').value || 'Your Name',
+    email: document.getElementById('email').value || 'email@example.com',
+    phone: document.getElementById('phone').value || '+00-000-0000000',
+    dob: document.getElementById('dob').value || '',
+    gender: document.getElementById('gender').value || '',
+    city: document.getElementById('city').value || 'Your City',
+    jobTitle: document.getElementById('jobTitle').value || 'Your Job Title',
+    summary: document.getElementById('summary').value || 'Add a professional summary here.',
+    education: edus,
+    experience: exps,
+    skills: getSkills()
+  };
+}
+
+function photoHTML(cls='cv-photo') {
+  if (profilePhotoSrc) return `<img src="${profilePhotoSrc}" class="${cls}" alt="Profile">`;
+  return `<div class="cv-photo-placeholder"><i class="fas fa-user"></i></div>`;
+}
+
+function buildSectionTitle(t) {
+  return `<div class="cv-section-title">${t}</div>`;
+}
+
+function buildSummary(d) {
+  if (!d.summary) return '';
+  return `<div class="cv-section">${buildSectionTitle('Summary')}<p>${d.summary}</p></div>`;
+}
+
+function buildExperience(d) {
+  if (!d.experience.length) return '';
+  const items = d.experience.map(e => `
+    <div class="cv-entry">
+      <div class="cv-entry-title">${e.title}</div>
+      <div class="cv-entry-sub">${[e.company, e.duration].filter(Boolean).join(' &mdash; ')}</div>
+      ${e.desc ? `<ul>${e.desc.split('\n').filter(Boolean).map(l=>`<li>${l}</li>`).join('')}</ul>` : ''}
+    </div>`).join('');
+  return `<div class="cv-section">${buildSectionTitle('Experience')}${items}</div>`;
+}
+
+function buildEducation(d) {
+  if (!d.education.length) return '';
+  const items = d.education.map(e => `
+    <div class="cv-entry">
+      <div class="cv-entry-title">${e.degree}</div>
+      <div class="cv-entry-sub">${e.uni}${e.year ? ' &mdash; ' + e.year : ''}</div>
+      ${e.cgpa ? `<div class="cv-entry-detail">CGPA: ${e.cgpa}</div>` : ''}
+    </div>`).join('');
+  return `<div class="cv-section">${buildSectionTitle('Education')}${items}</div>`;
+}
+
+function buildSkills(d) {
+  if (!d.skills.length) return '';
+  const badges = d.skills.map(s => `<span class="cv-skill-badge">${s}</span>`).join('');
+  return `<div class="cv-section">${buildSectionTitle('Skills')}<div class="cv-skills-list">${badges}</div></div>`;
+}
+
+function buildContact(d, dark=false) {
+  const col = dark ? '' : '';
+  return `<div class="cv-contact-row">
+    ${d.email ? `<span><i class="fas fa-envelope"></i> ${d.email}</span>` : ''}
+    ${d.phone ? `<span><i class="fas fa-phone"></i> ${d.phone}</span>` : ''}
+    ${d.city ? `<span><i class="fas fa-map-marker-alt"></i> ${d.city}</span>` : ''}
+  </div>`;
+}
+
+function renderTemplate(d) {
+  const t = selectedTemplate;
+  let inner = '';
+  if (t === 0) {
+    inner = `<div class="cv-header-bar">
+      ${photoHTML()}
+      <div>
+        <div class="cv-name">${d.name}</div>
+        <div class="cv-title-role">${d.jobTitle}</div>
+        ${buildContact(d)}
+      </div>
+    </div>
+    ${buildSummary(d)}${buildExperience(d)}${buildEducation(d)}${buildSkills(d)}`;
+  } else if (t === 1) {
+    inner = `<div class="cv-header-bar">
+      ${photoHTML()}
+      <div>
+        <div class="cv-name">${d.name}</div>
+        <div class="cv-title-role">${d.jobTitle}</div>
+        ${buildContact(d)}
+      </div>
+    </div>
+    ${buildSummary(d)}${buildExperience(d)}${buildEducation(d)}${buildSkills(d)}`;
+  } else if (t === 2) {
+    inner = `<div class="cv-header-bar">
+      ${photoHTML('cv-photo')}
+      <div>
+        <div class="cv-name" style="color:var(--primary)">${d.name}</div>
+        <div class="cv-title-role" style="color:var(--muted)">${d.jobTitle}</div>
+        ${buildContact(d)}
+      </div>
+    </div>
+    ${buildSummary(d)}${buildExperience(d)}${buildEducation(d)}${buildSkills(d)}`;
+  } else if (t === 3) {
+    inner = `<div class="cv-header-bar">
+      ${photoHTML()}
+      <div>
+        <div class="cv-name">${d.name}</div>
+        <div class="cv-title-role">${d.jobTitle}</div>
+        ${buildContact(d)}
+      </div>
+    </div>
+    ${buildSummary(d)}${buildExperience(d)}${buildEducation(d)}${buildSkills(d)}`;
+  } else if (t === 4) {
+    inner = `<div class="cv-header-bar">
+      ${photoHTML()}
+      <div>
+        <div class="cv-name">${d.name}</div>
+        <div class="cv-title-role">${d.jobTitle}</div>
+        ${buildContact(d)}
+      </div>
+    </div>
+    <div class="cv-two-col">
+      <div>${buildSummary(d)}${buildEducation(d)}</div>
+      <div>${buildExperience(d)}${buildSkills(d)}</div>
+    </div>`;
+  }
+  return `<div class="tpl-${t}">${inner}</div>`;
+}
+
+function updatePreview() {
+  const d = getFormData();
+  document.getElementById('cvPreview').innerHTML = renderTemplate(d);
+}
+
+// ---- EXPORT ----
+function generatePDF() {
+  const d = getFormData();
+  const content = document.getElementById('cvPreview').innerHTML;
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+<title>CV - ${d.name}</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+:root{--primary:#1a3a5c;--accent:#2563eb;--accent2:#e63946;--light:#f4f6fb;--border:#dde3ef;--text:#1e2a3a;--muted:#6b7a99;--white:#fff;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;color:var(--text);padding:20px;}
+.tpl-0 .cv-header-bar,.tpl-1 .cv-header-bar,.tpl-3 .cv-header-bar,.tpl-4 .cv-header-bar{padding:18px 22px;color:#fff;display:flex;align-items:center;gap:14px;margin-bottom:16px;border-radius:6px;}
+.tpl-0 .cv-header-bar{background:#1a3a5c;}
+.tpl-1 .cv-header-bar{background:#111827;}
+.tpl-2 .cv-header-bar{border-bottom:3px solid #2563eb;padding-bottom:12px;margin-bottom:16px;display:flex;align-items:center;gap:14px;}
+.tpl-3 .cv-header-bar{background:#1e40af;border-bottom:5px solid #f59e0b;}
+.tpl-4 .cv-header-bar{background:linear-gradient(135deg,#1a3a5c,#2563eb);}
+.cv-name{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;}
+.tpl-2 .cv-name{color:#1a3a5c;}
+.tpl-0 .cv-name,.tpl-1 .cv-name,.tpl-3 .cv-name,.tpl-4 .cv-name{color:#fff;}
+.cv-title-role{font-size:0.82rem;margin-top:2px;}
+.tpl-2 .cv-title-role{color:#6b7a99;}
+.tpl-0 .cv-title-role,.tpl-3 .cv-title-role,.tpl-4 .cv-title-role{color:rgba(255,255,255,0.8);}
+.tpl-1 .cv-title-role{color:#9ca3af;}
+.cv-contact-row{display:flex;gap:14px;flex-wrap:wrap;font-size:0.76rem;margin-top:6px;}
+.tpl-2 .cv-contact-row{color:#6b7a99;}
+.tpl-0 .cv-contact-row,.tpl-1 .cv-contact-row,.tpl-3 .cv-contact-row,.tpl-4 .cv-contact-row{color:rgba(255,255,255,0.85);}
+.cv-contact-row span{display:flex;align-items:center;gap:4px;}
+.cv-photo{width:60px;height:60px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,0.5);flex-shrink:0;}
+.cv-photo-placeholder{width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.6);font-size:1.4rem;flex-shrink:0;}
+.cv-section{margin-bottom:14px;}
+.cv-section-title{font-size:0.78rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#2563eb;border-bottom:1.5px solid #dde3ef;padding-bottom:4px;margin-bottom:8px;}
+.cv-section p{font-size:0.8rem;color:#6b7a99;line-height:1.6;}
+.cv-entry{margin-bottom:8px;}
+.cv-entry-title{font-size:0.85rem;font-weight:700;}
+.cv-entry-sub{font-size:0.75rem;color:#6b7a99;}
+.cv-entry ul{margin:3px 0 0 14px;}
+.cv-entry ul li{font-size:0.78rem;color:#6b7a99;line-height:1.6;}
+.cv-skills-list{display:flex;flex-wrap:wrap;gap:6px;}
+.cv-skill-badge{background:#f4f6fb;border:1.5px solid #dde3ef;color:#1a3a5c;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:600;}
+.tpl-4 .cv-two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;}
+@media print{body{padding:0;}@page{margin:15mm;}}
+</style>
+</head><body>${content}
+<script>window.onload=function(){window.print();}<\/script>
+</body></html>`);
+  win.document.close();
+}
+
+function generateWord() {
+  const d = getFormData();
+  const content = document.getElementById('cvPreview').innerHTML;
+  const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="UTF-8"><title>CV - ${d.name}</title>
+<style>
+body{font-family:Calibri,sans-serif;color:#1e2a3a;}
+.cv-header-bar{background:#1a3a5c;color:#fff;padding:14px 18px;margin-bottom:14px;}
+.cv-name{font-size:20pt;font-weight:bold;}
+.cv-title-role{font-size:10pt;color:rgba(255,255,255,0.8);}
+.cv-section-title{font-size:9pt;font-weight:bold;text-transform:uppercase;letter-spacing:1px;color:#2563eb;border-bottom:1pt solid #dde3ef;padding-bottom:3pt;margin-bottom:8pt;}
+.cv-entry-title{font-size:10pt;font-weight:bold;}
+.cv-entry-sub{font-size:9pt;color:#6b7a99;}
+.cv-section p,.cv-entry ul li{font-size:9pt;color:#6b7a99;}
+.cv-photo-placeholder,.cv-photo{display:none;}
+</style>
+</head><body>${content}</body></html>`;
+  const blob = new Blob(['\ufeff', html], {type:'application/msword'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `CV_${d.name.replace(/\s+/g,'_')}.doc`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ---- INIT ----
+renderTemplates();
+updatePreview();
+</script>
+</body>
+</html>
